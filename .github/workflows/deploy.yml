@@ -16,6 +16,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID}}
           vercel-project-id: ${{ secrets.PROJECT_ID}}
+          github-comment: false
           alias-domains: |
             staging.nextjs-test.iansutherland.dev
 
@@ -31,5 +32,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID}}
           vercel-project-id: ${{ secrets.PROJECT_ID}}
+          vercel-args: '--prod'
+          github-comment: false
           alias-domains: |
             nextjs-test.iansutherland.dev
