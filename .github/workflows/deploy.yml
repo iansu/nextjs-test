@@ -9,6 +9,7 @@ jobs:
   deploy-staging:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - uses: amondnet/vercel-action@v20
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
@@ -23,6 +24,7 @@ jobs:
     needs: deploy-staging
     environment: production
     steps:
+      - uses: actions/checkout@v2
       - uses: amondnet/vercel-action@v20
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
