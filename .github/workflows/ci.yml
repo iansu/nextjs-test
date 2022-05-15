@@ -8,6 +8,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      pull-requests: write
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -20,11 +22,9 @@ jobs:
         run: npm ci --prefer-offline
       - name: Build
         run: npm run build
-      - uses: amondnet/vercel-action@v20
+      - uses: amondnet/vercel-action@f445edf99fe899f0797463ca6b010746ce4e910e
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID}}
           vercel-project-id: ${{ secrets.PROJECT_ID}}
-          alias-domains: |
-            pr-{{PR_NUMBER}}.nextjs-test.iansutherland.ca
