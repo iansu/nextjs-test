@@ -6,33 +6,92 @@ on:
       - main
 
 jobs:
-  deploy-staging:
+  deploy-test-1-staging:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: test-1-changes
+        with:
+          filters: |
+            src:
+              - 'apps/nextjs-test-1/**'
       - uses: amondnet/vercel-action@v20
+        if: steps.test-1-changes.outputs.src == 'true'
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          vercel-org-id: ${{ secrets.ORG_ID}}
-          vercel-project-id: ${{ secrets.PROJECT_ID}}
+          vercel-org-id: ${{ secrets.ORG_ID }}
+          vercel-project-id: ${{ secrets.PROJECT_1_ID }}
           github-comment: false
           alias-domains: |
-            staging.nextjs-test.iansutherland.dev
+            staging.nextjs-test-1.iansutherland.dev
 
-  deploy-production:
+  deploy-test-2-staging:
     runs-on: ubuntu-latest
-    needs: deploy-staging
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: test-2-changes
+        with:
+          filters: |
+            src:
+              - 'apps/nextjs-test-2/**'
+      - uses: amondnet/vercel-action@v20
+        if: steps.test-2-changes.outputs.src == 'true'
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          vercel-org-id: ${{ secrets.ORG_ID }}
+          vercel-project-id: ${{ secrets.PROJECT_2_ID }}
+          github-comment: false
+          alias-domains: |
+            staging.nextjs-test-2.iansutherland.dev
+
+  deploy-test-1-production:
+    runs-on: ubuntu-latest
+    needs: deploy-test-1-staging
     environment: production
     steps:
       - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: test-1-changes
+        with:
+          filters: |
+            src:
+              - 'apps/nextjs-test-1/**'
       - uses: amondnet/vercel-action@v20
+        if: steps.test-1-changes.outputs.src == 'true'
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          vercel-org-id: ${{ secrets.ORG_ID}}
-          vercel-project-id: ${{ secrets.PROJECT_ID}}
+          vercel-org-id: ${{ secrets.ORG_ID }}
+          vercel-project-id: ${{ secrets.PROJECT_1_ID }}
           vercel-args: '--prod'
           github-comment: false
           alias-domains: |
-            nextjs-test.iansutherland.dev
+            nextjs-test-1.iansutherland.dev
+
+  deploy-test-1-production:
+    runs-on: ubuntu-latest
+    needs: deploy-test-2-staging
+    environment: production
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: test-2-changes
+        with:
+          filters: |
+            src:
+              - 'apps/nextjs-test-2/**'
+      - uses: amondnet/vercel-action@v20
+        if: steps.test-2-changes.outputs.src == 'true'
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          vercel-org-id: ${{ secrets.ORG_ID }}
+          vercel-project-id: ${{ secrets.PROJECT_2_ID }}
+          vercel-args: '--prod'
+          github-comment: false
+          alias-domains: |
+            nextjs-test-2.iansutherland.dev
