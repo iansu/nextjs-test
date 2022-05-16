@@ -27,9 +27,17 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: test-1-changes
+        with:
+          filters: |
+            src:
+              - 'apps/nextjs-test-1/**'
       - name: Build
+        if: steps.test-1-changes.outputs.src == 'true'
         run: npm run build -w nextjs-test-1
       - uses: amondnet/vercel-action@f445edf99fe899f0797463ca6b010746ce4e910e
+        if: steps.test-1-changes.outputs.src == 'true'
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -45,9 +53,17 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: test-2-changes
+        with:
+          filters: |
+            src:
+              - 'apps/nextjs-test-2/**'
       - name: Build
+        if: steps.test-2-changes.outputs.src == 'true'
         run: npm run build -w nextjs-test-2
       - uses: amondnet/vercel-action@f445edf99fe899f0797463ca6b010746ce4e910e
+        if: steps.test-2-changes.outputs.src == 'true'
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
