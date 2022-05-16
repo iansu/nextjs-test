@@ -8,6 +8,8 @@ on:
 jobs:
   deploy-test-1-staging:
     runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.test-1-changes.outputs.src }}
     steps:
       - uses: actions/checkout@v2
       - uses: dorny/paths-filter@v2
@@ -29,6 +31,8 @@ jobs:
 
   deploy-test-2-staging:
     runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.test-2-changes.outputs.src }}
     steps:
       - uses: actions/checkout@v2
       - uses: dorny/paths-filter@v2
@@ -51,17 +55,10 @@ jobs:
   deploy-test-1-production:
     runs-on: ubuntu-latest
     needs: deploy-test-1-staging
+    if: needs.deploy-test-1-staging.outputs.status == 'true'
     environment: production
     steps:
       - uses: actions/checkout@v2
-      - uses: dorny/paths-filter@v2
-        id: test-1-changes
-        with:
-          filters: |
-            src:
-              - 'apps/nextjs-test-1/**'
-      - uses: amondnet/vercel-action@v20
-        if: steps.test-1-changes.outputs.src == 'true'
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -75,15 +72,10 @@ jobs:
   deploy-test-2-production:
     runs-on: ubuntu-latest
     needs: deploy-test-2-staging
+    if: needs.deploy-test-2-staging.outputs.status == 'true'
     environment: production
     steps:
       - uses: actions/checkout@v2
-      - uses: dorny/paths-filter@v2
-        id: test-2-changes
-        with:
-          filters: |
-            src:
-              - 'apps/nextjs-test-2/**'
       - uses: amondnet/vercel-action@v20
         if: steps.test-2-changes.outputs.src == 'true'
         with:
