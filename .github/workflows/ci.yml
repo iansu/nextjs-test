@@ -28,13 +28,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build
-        run: npm run build
+        run: npm run build -w nextjs-test-1
       - uses: amondnet/vercel-action@f445edf99fe899f0797463ca6b010746ce4e910e
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID }}
           vercel-project-id: ${{ secrets.PROJECT_1_ID }}
+          working-directory: './apps/nextjs-test-1'
 
   build-test-2:
     runs-on: ubuntu-latest
@@ -45,10 +46,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build
-        run: npm run build
+        run: npm run build -w nextjs-test-2
       - uses: amondnet/vercel-action@f445edf99fe899f0797463ca6b010746ce4e910e
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID }}
           vercel-project-id: ${{ secrets.PROJECT_2_ID }}
+          working-directory: './apps/nextjs-test-2'
