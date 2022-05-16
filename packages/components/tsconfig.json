@@ -1,0 +1,16 @@
+{
+  "extends": "@tsconfig/node16/tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "jsx": "react",
+    "declaration": true,
+    "outDir": "build",
+    "baseUrl": ".",
+    "paths": {
+      "*": ["*", "node_modules/*", "src/*"]
+    }
+  },
+  "include": ["src/**/*"]
+}
