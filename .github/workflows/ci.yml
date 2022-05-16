@@ -4,53 +4,75 @@ on:
   pull_request:
     types: ['opened', 'reopened', 'synchronize']
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  install-deps:
+  build-test-1:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      pull-requests: write
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: 16
           cache: npm
+      - uses: dorny/paths-filter@v2
+        id: test-1-changes
+        with:
+          filters: |
+            src:
+              - 'apps/nextjs-test-1/**'
       - name: Install latest npm
+        if: steps.test-1-changes.outputs.src == 'true'
         run: npm install -g npm@latest
       - name: Install
+        if: steps.test-1-changes.outputs.src == 'true'
         run: npm ci --prefer-offline
-
-  build-test-1:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs: install-deps
-    permissions:
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v2
       - name: Build
+        if: steps.test-1-changes.outputs.src == 'true'
         run: npm run build -w nextjs-test-1
       - uses: amondnet/vercel-action@f445edf99fe899f0797463ca6b010746ce4e910e
+        if: steps.test-1-changes.outputs.src == 'true'
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID }}
           vercel-project-id: ${{ secrets.PROJECT_1_ID }}
-          working-directory: './apps/nextjs-test-1'
 
   build-test-2:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: install-deps
     permissions:
       pull-requests: write
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: npm
+      - uses: dorny/paths-filter@v2
+        id: test-2-changes
+        with:
+          filters: |
+            src:
+              - 'apps/nextjs-test-2/**'
+      - name: Install latest npm
+        if: steps.test-2-changes.outputs.src == 'true'
+        run: npm install -g npm@latest
+      - name: Install
+        if: steps.test-2-changes.outputs.src == 'true'
+        run: npm ci --prefer-offline
       - name: Build
+        if: steps.test-2-changes.outputs.src == 'true'
         run: npm run build -w nextjs-test-2
       - uses: amondnet/vercel-action@f445edf99fe899f0797463ca6b010746ce4e910e
+        if: steps.test-2-changes.outputs.src == 'true'
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID }}
           vercel-project-id: ${{ secrets.PROJECT_2_ID }}
-          working-directory: './apps/nextjs-test-2'
