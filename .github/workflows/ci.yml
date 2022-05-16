@@ -12,7 +12,6 @@ jobs:
   build-test-1:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: install-deps
     permissions:
       pull-requests: write
     steps:
@@ -47,7 +46,6 @@ jobs:
   build-test-2:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: install-deps
     permissions:
       pull-requests: write
     steps:
