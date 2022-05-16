@@ -27,12 +27,22 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: npm
       - uses: dorny/paths-filter@v2
         id: test-1-changes
         with:
           filters: |
             src:
               - 'apps/nextjs-test-1/**'
+      - name: Install latest npm
+        if: steps.test-1-changes.outputs.src == 'true'
+        run: npm install -g npm@latest
+      - name: Install
+        if: steps.test-1-changes.outputs.src == 'true'
+        run: npm ci --prefer-offline
       - name: Build
         if: steps.test-1-changes.outputs.src == 'true'
         run: npm run build -w nextjs-test-1
@@ -53,12 +63,22 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: npm
       - uses: dorny/paths-filter@v2
         id: test-2-changes
         with:
           filters: |
             src:
               - 'apps/nextjs-test-2/**'
+      - name: Install latest npm
+        if: steps.test-2-changes.outputs.src == 'true'
+        run: npm install -g npm@latest
+      - name: Install
+        if: steps.test-2-changes.outputs.src == 'true'
+        run: npm ci --prefer-offline
       - name: Build
         if: steps.test-2-changes.outputs.src == 'true'
         run: npm run build -w nextjs-test-2
